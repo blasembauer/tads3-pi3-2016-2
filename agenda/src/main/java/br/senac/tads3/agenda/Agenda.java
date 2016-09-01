@@ -96,10 +96,70 @@ public class Agenda extends ConexaoBD {
 
     //Metodo de processamento - Atualizar
     public void atualizar() {
-        PreparedStatement stmt = null;
-        Connection conn = null;
+        System.out.print("Digite o nome que voce desejar alterar: ");;
+        String nome_alterar = entrada.nextLine();
+        
+        System.out.print("Digite o nome completo do contato: ");
+        String nome = entrada.nextLine();
+
+        System.out.print("Digite a data de nascimento no formato dd/mm/aaa: ");
+        String strDataNasc = entrada.nextLine();
+
+        System.out.print("Digite o e-mail: ");
+        String email = entrada.nextLine();
+
+        System.out.print("Digite o telefone no formato 99 99999-9999: ");
+        String telefone = entrada.nextLine();
+        
+        
 
         // 1) Abrir conexao 
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        
+        String sql = "UPDATE TB_CONTATO SET (NM_CONTATO, DT_NASCIMENTO, "
+                + "VL_TELEFONE, VL_EMAIL)"
+                + "VALUES (? ,? , ?, ?) WHERE NM_CONTATO = '" + nome_alterar + "'";
+        
+        try {
+            conn = obterConexao();
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, nome);
+
+            DateFormat formatador = new SimpleDateFormat("dd/MM/yyy");
+            Date dataNasc = null;
+            try {
+                dataNasc = formatador.parse(strDataNasc);
+            } catch (ParseException ex) {
+                System.out.println("Data de nascimento invalida.");
+            }
+            stmt.setDate(2, new java.sql.Date(dataNasc.getTime()));
+            stmt.setString(3, telefone);
+            stmt.setString(4, email);
+
+            // 2) Exectuar SQL
+            stmt.executeUpdate();
+            System.out.println("Cotato cadastrado com sucesso");
+        } catch (SQLException e) {
+            System.out.println("Nao foi possivel executar.");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Nao foi possivel executar.");
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {
+                    System.out.println("Erro a fechar stmt.");
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    System.out.println("Erro a fechar conn.");
+                }
+            }
+        }
     }
 
     // Metodo de processamento - Incluir
