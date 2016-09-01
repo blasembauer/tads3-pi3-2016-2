@@ -20,21 +20,86 @@ public class Agenda extends ConexaoBD {
     public void listar() {
         PreparedStatement stmt = null;
         Connection conn = null;
-        
+
         // 1) Abrir conexao 
         String sql = "SELECT NM_CONTATO FROM TB_CONTATO";
-        
+
         try {
             conn = obterConexao();
             stmt = conn.prepareStatement(sql);
-            ResultSet  resultset = stmt.executeQuery();
-            while(resultset.next()){
+            ResultSet resultset = stmt.executeQuery();
+            // 2) Exectuar SQL 
+            while (resultset.next()) {
                 String NM_CONTATO = resultset.getString("NM_CONTATO");
                 System.out.println(NM_CONTATO);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.out.println("Nao foi possivel executar.");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Nao foi possivel executar.");
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {
+                    System.out.println("Erro a fechar stmt.");
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    System.out.println("Erro a fechar conn.");
+                }
+            }
         }
+    }
+
+    //Metodo de processamento - Deletado
+    public void deletar() {
+        //Nome no qual sera apagado
+        System.out.print("Digite o nome para ser apagado: ");
+        String nome = entrada.nextLine();
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        String sql = "DELETE FROM TB_CONTATO WHERE NM_CONTATO = '" + nome + "'";
+
+        try {
+            conn = obterConexao();
+            stmt = conn.prepareStatement(sql);
+            stmt.execute();
+            System.out.println("Contato apagado");
+        } catch (SQLException e) {
+            System.out.println("Nao foi possivel executar.");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Nao foi possivel executar.");
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException ex) {
+                    System.out.println("Erro a fechar stmt.");
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    System.out.println("Erro a fechar conn.");
+                }
+            }
+        }
+
+    }
+
+    //Metodo de processamento - Atualizar
+    public void atualizar() {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        // 1) Abrir conexao 
     }
 
     // Metodo de processamento - Incluir
@@ -54,7 +119,6 @@ public class Agenda extends ConexaoBD {
         // 1) Abrir conexao 
         PreparedStatement stmt = null;
         Connection conn = null;
-        
 
         String sql = "INSERT INTO TB_CONTATO (NM_CONTATO, DT_NASCIMENTO, "
                 + "VL_TELEFONE, VL_EMAIL, DT_CADASTRO)"
@@ -112,7 +176,9 @@ public class Agenda extends ConexaoBD {
             System.out.println("****DIGITE UMA OPCAO****");
             System.out.println("(1) Listar contatos");
             System.out.println("(2) Incluir novo contato");
-            System.out.println("(3) Sair");
+            System.out.println("(3) Atualizar um contato");
+            System.out.println("(4) Deletar um contato");
+            System.out.println("(5) Sair");
             System.out.println("Opcao:");
 
             String srtOpcao = entrada.nextLine();
@@ -125,7 +191,13 @@ public class Agenda extends ConexaoBD {
                 case 2:
                     instancia.incluir();
                     break;
-                case 9:
+                case 3:
+                    instancia.atualizar();
+                    break;
+                case 4:
+                    instancia.deletar();
+                    break;
+                case 5:
                     System.exit(0);
                     break;
                 default:
