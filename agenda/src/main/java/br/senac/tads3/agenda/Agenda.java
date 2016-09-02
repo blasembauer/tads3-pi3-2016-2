@@ -117,9 +117,9 @@ public class Agenda extends ConexaoBD {
         PreparedStatement stmt = null;
         Connection conn = null;
         
-        String sql = "UPDATE TB_CONTATO SET (NM_CONTATO, DT_NASCIMENTO, "
-                + "VL_TELEFONE, VL_EMAIL)"
-                + "VALUES (? ,? , ?, ?) WHERE NM_CONTATO = '" + nome_alterar + "'";
+        String sql = "UPDATE TB_CONTATO SET NM_CONTATO = ?, DT_NASCIMENTO = ?, "
+                + "VL_TELEFONE = ?, VL_EMAIL = ?"
+                + "WHERE NM_CONTATO = '" + nome_alterar + "'";
         
         try {
             conn = obterConexao();
